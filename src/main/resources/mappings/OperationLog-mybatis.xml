@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.jiangnan.es.operationlog.dao.OperationLogDao">
+    <!--新增-->
+    <insert id="save" parameterType="OperationLog">
+    	INSERT INTO OPERATION_LOG (ID, USERNAME, OPERATE_TIME, OPERATION, MODULE, IDENTIFIER, COLUMNS) 
+    		VALUES (#{id}, #{userName}, #{operateTime}, #{operation}, #{module}, #{identifier}, #{columns, typeHandler = com.jiangnan.es.operationlog.handler.ColumnsTypeHandler})
+    	</insert>
+    
+    <!--根据ID获取-->
+    <select id="get" parameterType="int" resultMap="operationlogMap">
+    	SELECT ID, USERNAME, OPERATE_TIME, OPERATION, MODULE, IDENTIFIER, COLUMNS FROM OPERATION_LOG WHERE ID = #{param2}
+    </select>
+   
+    <!--更新-->
+    <update id="update" parameterType="OperationLog">
+		UPDATE OPERATION_LOG 
+        <set>
+            <if test="id != null">ID = #{id},</if>
+        </set>
+		 WHERE ID = #{id}
+    </update>
+   
+    <!--列表-->
+    <select id="list" resultMap="operationlogMap">
+    	SELECT ID, USERNAME, OPERATE_TIME, OPERATION, MODULE, IDENTIFIER, COLUMNS FROM OPERATION_LOG 
+        <where>
+            <if test="id != null">ID = #{id}</if>
+            <if test="userName != null and userName != ''">USERNAME = #{userName}</if>
+            <if test="operation != null and operation != ''">OPERATION = #{operation}</if>
+            <if test="module != null and module != ''">MODULE = #{module}</if>
+            <if test="identifier != null and identifier != ''">IDENTIFIER = #{identifier}</if>
+        </where>
+    </select>
+   
+    <!--删除-->
+    <delete id="remove" parameterType="int">
+    	DELETE FROM OPERATION_LOG WHERE ID = #{param2}
+    </delete>
+   
+    <!--结果映射器-->
+    <resultMap id="operationlogMap" type="OperationLog">
+        <id column="ID" property="id"/>
+        <result column="USERNAME" property="userName"/>
+        <result column="OPERATE_TIME" property="operateTime"/>
+        <result column="OPERATION" property="operation"/>
+        <result column="MODULE" property="module"/>
+        <result column="IDENTIFIER" property="identifier"/>
+        <result column="COLUMNS" property="columns" typeHandler="com.jiangnan.es.operationlog.handler.ColumnsTypeHandler"/>
+    </resultMap>
+</mapper>
